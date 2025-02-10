@@ -1,0 +1,107 @@
+version: '3.3'
+
+networks:
+  localnetwork:
+    external: true
+
+services:
+
+  ### POSTGRE ###
+  #postgres:
+  #  hostname: postgresql
+  #  container_name: PostgreSql
+  #  image: postgres:latest
+  #  restart: always
+  #  environment:
+  #    POSTGRES_USER: root
+  #    POSTGRES_PASSWORD: C6ke+!p*wKE5
+  #  volumes:
+  #    - ./postgresql:/var/lib/postgresql/data
+  #  ports:
+  #    - 5432:5432
+
+  ### MSSQL ###
+  mssql:
+    hostname: mssql
+    container_name: MsSql
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: always
+    user: root
+    volumes:
+      - './mssql:/var/opt/mssql/data'
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=C6ke+!p*wKE5
+    ports:
+      - 1433:1433
+    networks:
+      - localnetwork
+
+  ### MYSQL ###
+  mysql:
+    hostname: mysql
+    container_name: MySql
+    image: mysql/mysql-server:5.7
+    restart: always
+    command:
+      [
+        '--character-set-server=utf8',
+        '--collation-server=utf8_unicode_ci',
+        '--lower_case_table_names=2',
+        '--skip-grant-tables'
+      ]
+    volumes:
+      - './mysql:/var/lib/mysql'
+    environment:
+      - MYSQL_USER=user
+      - MYSQL_ROOT_PASSWORD=C6ke+!p*wKE5
+      - MYSQL_PASS=C6ke+!p*wKE5
+    ports:
+      - 3306:3306
+    networks:
+      - localnetwork
+
+  ### SEQ ###
+  seq:
+    hostname: seq
+    container_name: Seq
+    image: datalust/seq
+    restart: always
+    volumes:
+      - '/path/to/seq/data:/data'
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - 5342:80
+      - 5341:5341
+    networks:
+      - localnetwork
+
+  ### REDIS ###
+  redis:
+    hostname: redis
+    container_name: Redis
+    image: bitnami/redis
+    restart: always
+    environment:
+      - REDIS_PASSWORD=CRFfKhNJmg
+    ports:
+      - 6379:6379
+    networks:
+      - localnetwork
+
+  ### RABBITMQ ###
+  rabbit:
+    hostname: rabbit
+    container_name: RabbitMQ
+    image: docker.io/bitnami/rabbitmq:3.8
+    restart: always
+    environment:
+      - RABBITMQ_SECURE_PASSWORD=yes
+      - RABBITMQ_USERNAME=user
+      - RABBITMQ_PASSWORD=3aKgDJMyIs
+    ports:
+      - 15672:15672
+      - 5672:5672
+    networks:
+      - localnetwork
